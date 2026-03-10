@@ -1,18 +1,22 @@
 pipeline {
-        agent {
-            docker {
-                image 'jenkins/jnlp-agent-maven:windows-nanoserver-jdk11' // Example image from Docker Hub
-                label 'docker-agent'
-            }
+    agent {
+        docker {
+            image 'maven:3.9.9-eclipse-temurin-17'
+            label 'docker-agent'
+        }
+    }
+
     options {
         skipStagesAfterUnstable()
     }
+
     stages {
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'mvn test'
@@ -23,9 +27,10 @@ pipeline {
                 }
             }
         }
+
         stage('Docker Build') {
             steps {
-                sh 'docker build -t springio/gs-spring-boot-docker .'
+               sh "docker build -t springio/gs-spring-boot-docker:${env.BUILD_NUMBER} ."
             }
         }
     }
