@@ -1,18 +1,16 @@
 pipeline {
     agent any
-    environment {
-        PATH = "/usr/bin:${env.PATH}"
-    }
+
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh '/usr/bin/mvn -B -DskipTests clean package'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh '/usr/bin/mvn test'
             }
             post {
                 always {
