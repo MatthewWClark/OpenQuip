@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'linux-maven' } // your Linux agent
+    agent any
 
     options {
         skipStagesAfterUnstable()
@@ -8,7 +8,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Use full path to Maven
                 sh '/usr/bin/mvn -B -DskipTests clean package'
             }
         }
