@@ -6,7 +6,8 @@ pipeline {
     }
     tools {
         maven 'Maven-3.9.9'
-    }
+        docker 'docker-tool'
+        }
     stages {
         stage('Build') {
             steps {
