@@ -1,7 +1,7 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven-3.9.9' // matches name in Global Tool Config
+    environment {
+        PATH = "/usr/bin:${env.PATH}"
     }
     stages {
         stage('Build') {
