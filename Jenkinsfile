@@ -1,41 +1,32 @@
 pipeline {
-    agent none // we’ll specify agent per stage
+    agent { label 'linux-maven' } // your Linux agent
 
     options {
         skipStagesAfterUnstable()
     }
 
     stages {
-        stage('Build & Test') {
-            agent {
-                docker {
-                    image 'maven:3.9.9-eclipse-temurin-17'
-                    label 'k8s-agent' // Kubernetes pod label
-                }
+        stage('Build') {
+            steps {
+                // Use full path to Maven
+                sh '/usr/bin/mvn -B -DskipTests clean package'
             }
-            stages {
-                stage('Build') {
-                    steps {
-                        sh 'mvn -B -DskipTests clean package'
-                    }
-                }
-                stage('Test') {
-                    steps {
-                        sh 'mvn test'
-                    }
-                    post {
-                        always {
-                            junit 'target/surefire-reports/*.xml'
-                        }
-                    }
+        }
+
+        stage('Test') {
+            steps {
+                sh '/usr/bin/mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
                 }
             }
         }
 
         stage('Docker Build') {
-            agent { label 'docker-node' } // runs on the node with Docker installed
             steps {
-                // Copy the built jar from workspace (Maven pod workspace is persisted)
+                // This will run on the same node that has Docker installed
                 sh 'docker build -t springio/gs-spring-boot-docker .'
             }
         }
